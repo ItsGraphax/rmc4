@@ -1,0 +1,9 @@
+name: rmc4
+version: '1.0-ALPHA'
+main: de.itsgraphax.rmc4.Rmc4
+bootstrapper: de.itsgraphax.rmc4.Rmc4Bootstrap
+api-version: '1.21'
+prefix: RMC4
+authors: [ ItsGraphax ]
+description: RuggiMC Season 4
+website: https://itsgraphax.de
