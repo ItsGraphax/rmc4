@@ -3,7 +3,9 @@ package de.itsgraphax.rmc4.commands.give_token;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
+import de.itsgraphax.rmc4.Token;
 import de.itsgraphax.rmc4.Utils;
+import enums.TokenIdentifier;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import org.bukkit.entity.Player;
@@ -25,9 +27,9 @@ public class GiveTokenCommand {
             return 0;
         }
 
-        Utils.TokenIdentifier tokenId = ctx.getArgument("token", Utils.TokenIdentifier.class);
+        TokenIdentifier tokenId = ctx.getArgument("token", TokenIdentifier.class);
 
-        ItemStack item = Utils.getTokenItem(plugin, tokenId, false, 0);
+        ItemStack item = new Token(tokenId, false, 0).asItem(plugin);
         Utils.setBlockInv(plugin, item, true);
         player.getInventory().addItem(item);
 

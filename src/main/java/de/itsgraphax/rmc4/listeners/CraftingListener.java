@@ -1,6 +1,6 @@
 package de.itsgraphax.rmc4.listeners;
 
-import de.itsgraphax.rmc4.Utils;
+import enums.CustomItemMaterial;
 import org.bukkit.NamespacedKey;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -30,11 +30,11 @@ public class CraftingListener implements Listener {
 
     public CraftingListener(JavaPlugin plugin) {
         this.plugin = plugin;
-        this.recipe_token_core = new NamespacedKey(plugin, Utils.CustomItemMaterial.TOKEN_CORE.toString());
-        this.recipe_dupe_token = new NamespacedKey(plugin, Utils.CustomItemMaterial.TOKEN.toString());
+        this.recipe_token_core = new NamespacedKey(plugin, CustomItemMaterial.TOKEN_CORE.toString());
+        this.recipe_dupe_token = new NamespacedKey(plugin, CustomItemMaterial.TOKEN.toString());
     }
 
-    private boolean forceCraftingCustomId(CraftingInventory inventory, Integer slot, Utils.CustomItemMaterial item_id) {
+    private boolean forceCraftingCustomId(CraftingInventory inventory, Integer slot, CustomItemMaterial item_id) {
         /* Returns false if the item was not matching */
         if (inventory.getItem(slot) != null) {
             // Check if the item is not a diamond shard
@@ -57,11 +57,11 @@ public class CraftingListener implements Listener {
 
                 // Core Crafting Recipe
                 if (recipe.getKey().equals(recipe_token_core)) {
-                    forceCraftingCustomId(event.getInventory(), MIDDLE_MIDDLE, Utils.CustomItemMaterial.DIAMOND_SHARD);
+                    forceCraftingCustomId(event.getInventory(), MIDDLE_MIDDLE, CustomItemMaterial.DIAMOND_SHARD);
 
                 } else if (recipe.getKey().equals(recipe_dupe_token)) {
-                    forceCraftingCustomId(event.getInventory(), TOP_MIDDLE, Utils.CustomItemMaterial.DUPE_TOKEN_CORE);
-                    forceCraftingCustomId(event.getInventory(), MIDDLE_MIDDLE, Utils.CustomItemMaterial.TOKEN_CORE);
+                    forceCraftingCustomId(event.getInventory(), TOP_MIDDLE, CustomItemMaterial.DUPE_TOKEN_CORE);
+                    forceCraftingCustomId(event.getInventory(), MIDDLE_MIDDLE, CustomItemMaterial.TOKEN_CORE);
                 }
             }
         }

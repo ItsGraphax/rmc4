@@ -5,6 +5,7 @@ import de.itsgraphax.rmc4.commands.give_token.GiveTokenCommand;
 import de.itsgraphax.rmc4.listeners.ClickListener;
 import de.itsgraphax.rmc4.listeners.CraftingListener;
 import de.itsgraphax.rmc4.listeners.InvBlockListeners;
+import de.itsgraphax.rmc4.listeners.JoinListener;
 import de.itsgraphax.rmc4.recipes.RecipeManager;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import org.bukkit.plugin.PluginManager;
@@ -22,6 +23,8 @@ public final class Rmc4 extends JavaPlugin {
 
         // Register Click Listener
         pm.registerEvents(new ClickListener(this), this);
+
+        pm.registerEvents(new JoinListener(this), this);
     }
 
     private void registerCommands() {
@@ -38,6 +41,10 @@ public final class Rmc4 extends JavaPlugin {
         saveDefaultConfig();
     }
 
+    private void startTasks() {
+        PlayerUiManager.updateForAllTask(this);
+    }
+
     @Override
     public void onEnable() {
         setupConfig();
@@ -47,5 +54,7 @@ public final class Rmc4 extends JavaPlugin {
         RecipeManager.registerAll(this);
 
         registerCommands();
+
+        startTasks();
     }
 }

@@ -1,6 +1,9 @@
 package de.itsgraphax.rmc4.recipes;
 
+import de.itsgraphax.rmc4.Token;
 import de.itsgraphax.rmc4.Utils;
+import enums.CustomItemMaterial;
+import enums.TokenIdentifier;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
@@ -12,9 +15,9 @@ public final class RecipeManager {
     }
 
     private static void registerDiamondShard(JavaPlugin plugin) {
-        ItemStack diamond_shard_recipe_item = Utils.getCustomItem(plugin, Utils.CustomItemMaterial.DIAMOND_SHARD);
+        ItemStack diamond_shard_recipe_item = Utils.getCustomItem(plugin, CustomItemMaterial.DIAMOND_SHARD);
 
-        ShapedRecipe diamond_shard_recipe = new ShapedRecipe(new NamespacedKey(plugin, Utils.CustomItemMaterial.DIAMOND_SHARD.toString()), diamond_shard_recipe_item);
+        ShapedRecipe diamond_shard_recipe = new ShapedRecipe(new NamespacedKey(plugin, CustomItemMaterial.DIAMOND_SHARD.toString()), diamond_shard_recipe_item);
         diamond_shard_recipe.shape("pdp", "dad", "pdp");
         diamond_shard_recipe.setIngredient('d', Material.DIAMOND);
         diamond_shard_recipe.setIngredient('a', Material.AMETHYST_SHARD);
@@ -23,9 +26,9 @@ public final class RecipeManager {
     }
 
     private static void registerCore(JavaPlugin plugin) {
-        ItemStack core_recipe_item = Utils.getCustomItem(plugin, Utils.CustomItemMaterial.TOKEN_CORE);
+        ItemStack core_recipe_item = Utils.getCustomItem(plugin, CustomItemMaterial.TOKEN_CORE);
 
-        ShapedRecipe core_recipe = new ShapedRecipe(new NamespacedKey(plugin, Utils.CustomItemMaterial.TOKEN_CORE.toString()), core_recipe_item);
+        ShapedRecipe core_recipe = new ShapedRecipe(new NamespacedKey(plugin, CustomItemMaterial.TOKEN_CORE.toString()), core_recipe_item);
         core_recipe.shape(" i ", "pdp", " i ");
         core_recipe.setIngredient('i', Material.IRON_BLOCK);
         core_recipe.setIngredient('p', Material.PHANTOM_MEMBRANE);
@@ -34,10 +37,10 @@ public final class RecipeManager {
     }
 
     private static void registerDupeToken(JavaPlugin plugin) {
-        ItemStack dupe_token_recipe_item = Utils.getTokenItem(plugin, Utils.TokenIdentifier.DUPE, false, 0);
+        ItemStack dupe_token_recipe_item = new Token(TokenIdentifier.DUPE, false, 0).asItem(plugin);
         Utils.setBlockInv(plugin, dupe_token_recipe_item, true);
 
-        ShapedRecipe dupe_token_recipe = new ShapedRecipe(new NamespacedKey(plugin, Utils.CustomItemMaterial.TOKEN.toString()), dupe_token_recipe_item);
+        ShapedRecipe dupe_token_recipe = new ShapedRecipe(new NamespacedKey(plugin, CustomItemMaterial.TOKEN.toString()), dupe_token_recipe_item);
         dupe_token_recipe.shape("idi", "kck", "bxb");
         dupe_token_recipe.setIngredient('i', Material.IRON_BLOCK);
         dupe_token_recipe.setIngredient('d', Utils.CUSTOM_ITEM_MATERIAL); // dupe token core

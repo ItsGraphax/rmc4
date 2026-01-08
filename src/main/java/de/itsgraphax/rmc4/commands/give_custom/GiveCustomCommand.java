@@ -4,6 +4,7 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import de.itsgraphax.rmc4.Utils;
+import enums.CustomItemMaterial;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import org.bukkit.entity.Player;
@@ -24,7 +25,7 @@ public class GiveCustomCommand {
             return 0;
         }
 
-        Utils.CustomItemMaterial itemId = ctx.getArgument("item", Utils.CustomItemMaterial.class);
+        CustomItemMaterial itemId = ctx.getArgument("item", CustomItemMaterial.class);
 
         player.getInventory().addItem(Utils.getCustomItem(plugin, itemId));
 
