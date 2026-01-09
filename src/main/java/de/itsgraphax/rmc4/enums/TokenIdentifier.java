@@ -1,4 +1,4 @@
-package enums;
+package de.itsgraphax.rmc4.enums;
 
 public enum TokenIdentifier {
     UNKNOWN("unknown"),

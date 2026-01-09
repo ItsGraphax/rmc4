@@ -2,10 +2,10 @@ package de.itsgraphax.rmc4.listeners;
 
 import de.itsgraphax.rmc4.Token;
 import de.itsgraphax.rmc4.Utils;
-import enums.CustomItemMaterial;
+import de.itsgraphax.rmc4.enums.CustomItemMaterial;
 import de.itsgraphax.rmc4.InteractionManager;
-import enums.InteractionState;
-import enums.MouseButton;
+import de.itsgraphax.rmc4.enums.InteractionState;
+import de.itsgraphax.rmc4.enums.MouseButton;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -38,8 +38,6 @@ public class ClickListener implements Listener {
 
         InteractionManager.setPlayerInteractionState(plugin, player, InteractionState.SELECTING_EQUIP_SLOT, item,
                 event.getHand(), Utils.DEFAULT_TIMEOUT_NORMAL_S);
-
-        player.sendMessage("startTokenEquipCheck ran successfully");
     }
 
     private void finishTokenEquipCheck(PlayerInteractEvent event) {
@@ -58,8 +56,6 @@ public class ClickListener implements Listener {
             return;
         }
 
-        player.sendMessage("finishEquipCheck running");
-
         MouseButton mb = MouseButton.simplifyActionEnum(event.getAction());
         if (mb == MouseButton.NONE) {return;}
 
@@ -68,24 +64,26 @@ public class ClickListener implements Listener {
         else if (mb == MouseButton.RIGHT) {slot = 1;}
 
         Token currentTokenAtPlayerSlot = Token.fromPlayer(plugin, player, slot);
-        // if slot is occupied fromDefault is false
+        // if slot is equipped
         if (!currentTokenAtPlayerSlot.fromDefault) {
+            InteractionManager.resetPlayerInteractionState(plugin, player);
             return;
         }
 
         assert item != null;
         Token newToken = Token.fromItem(plugin, item);
         newToken.intoPlayer(plugin, player, slot);
-        player.sendMessage(Token.fromPlayer(plugin, player, slot).identifier.toString());
 
         item.setAmount(item.getAmount() - 1);
 
-        player.sendMessage("token equipped :D");
+        InteractionManager.resetPlayerInteractionState(plugin, player);
     }
 
     @EventHandler
     public void playerInteractListener(PlayerInteractEvent event) {
-        startTokenEquipCheck(event);
-        finishTokenEquipCheck(event);
+        if (event.getHand() != null) {
+            finishTokenEquipCheck(event);
+            startTokenEquipCheck(event);
+        }
     }
 }

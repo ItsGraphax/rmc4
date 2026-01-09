@@ -1,4 +1,4 @@
-package enums;
+package de.itsgraphax.rmc4.enums;
 
 public enum InteractionState {
     NONE(0),

@@ -1,8 +1,11 @@
-package enums;
+package de.itsgraphax.rmc4.enums;
 
 public enum ResourcePackLetter {
-    COOLDOWN_BAR("\uf000"),
-    DUPE_TOKEN("\uf001");
+    UNKNOWN("\uf000"),
+    COOLDOWN_BAR("\uf001"),
+    EMPTY_TOKEN("\uf002"),
+    DUPE_TOKEN("\uf003"),
+    DUPE_TOKEN_BROKEN("\uf004");
 
     private final String text;
 

@@ -4,8 +4,7 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import de.itsgraphax.rmc4.Token;
-import de.itsgraphax.rmc4.Utils;
-import enums.TokenIdentifier;
+import de.itsgraphax.rmc4.enums.TokenIdentifier;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import org.bukkit.entity.Player;
@@ -17,8 +16,6 @@ public class GiveTokenCommand {
         LiteralArgumentBuilder<CommandSourceStack> giveCustomCommand = Commands.literal("give-token").then(Commands.argument("token", new CustomTokenArgument()).executes(ctx -> executeSelf(ctx, plugin)));
 
         commands.register(giveCustomCommand.build());
-
-        plugin.getComponentLogger().info("givetoken registered");
     }
 
     private static int executeSelf(CommandContext<CommandSourceStack> ctx, JavaPlugin plugin) {
@@ -30,7 +27,6 @@ public class GiveTokenCommand {
         TokenIdentifier tokenId = ctx.getArgument("token", TokenIdentifier.class);
 
         ItemStack item = new Token(tokenId, false, 0).asItem(plugin);
-        Utils.setBlockInv(plugin, item, true);
         player.getInventory().addItem(item);
 
         player.sendMessage("Gave " + tokenId + " token");

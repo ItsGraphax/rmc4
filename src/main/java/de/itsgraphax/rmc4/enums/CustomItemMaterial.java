@@ -1,8 +1,8 @@
-package enums;
+package de.itsgraphax.rmc4.enums;
 
 // Enums
 public enum CustomItemMaterial {
-    DIAMOND_SHARD("diamond_shard"), TOKEN_CORE("core"), TOKEN("token"), DUPE_TOKEN_CORE("dupe_token_core");
+    DIAMOND_SHARD("diamond_shard"), TOKEN_CORE("core"), TOKEN("token"), DUPE_TOKEN_CORE("dupe_token_core"), TOKEN_REPAIRER("token_repairer");
 
     private final String text;
 

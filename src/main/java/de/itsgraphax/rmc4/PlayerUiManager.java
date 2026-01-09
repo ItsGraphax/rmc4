@@ -1,53 +1,51 @@
 package de.itsgraphax.rmc4;
 
 import de.itsgraphax.rmc4.utils.Namespaces;
-import enums.InteractionState;
-import enums.ResourcePackLetter;
+import de.itsgraphax.rmc4.enums.InteractionState;
+import de.itsgraphax.rmc4.enums.ResourcePackLetter;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.kyori.adventure.title.Title;
 import net.kyori.adventure.title.TitlePart;
 import org.bukkit.entity.Player;
-import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.time.Duration;
 
 public class PlayerUiManager {
     /**
      * Generate action bar
      */
-    private static Component generateActionBarForPlayer(JavaPlugin plugin, Player player) {
-        Integer tmp = player.getPersistentDataContainer().get(Namespaces.interactionState(plugin), PersistentDataType.INTEGER);
-        String result;
-        if (tmp == null) {
-            result = "<null>";
-        } else {
-            result = tmp.toString();
+    private static @NotNull Component generateActionBarForPlayer(JavaPlugin plugin, Player player) {
+        Component result;
+
+        // Interaction Cooldown
+        if (!InteractionManager.checkPlayerInteractionState(plugin, player, InteractionState.NONE)) {
+            // Calculate Percent
+            Float remainingTime = InteractionManager.getInteractionStateRemainingTime(plugin, player);
+            Integer totalTime = player.getPersistentDataContainer().get(Namespaces.interactionStateTimeout(plugin), PersistentDataType.INTEGER);
+            if (remainingTime == null || totalTime == null) {
+                return null;
+            }
+            float percent = (float) remainingTime / totalTime;
+
+            result = Component.text(ResourcePackLetter.COOLDOWN_BAR.toString().repeat((int) Math.ceil(percent * 10)));
         }
-        return Component.text(result);
+        else {
+            Token slot0 = Token.fromPlayer(plugin, player, 0);
+            Token slot1 = Token.fromPlayer(plugin, player, 1);
+
+            result = Component.text(slot0.toLetter() + " " + slot1.toLetter());
+        }
+
+        return result;
     }
 
     private static @Nullable Component generateSubtitleForPlayer(JavaPlugin plugin, Player player) {
-        if (InteractionManager.checkPlayerInteractionState(plugin, player, InteractionState.NONE)) {
-            return null;
-        }
+        return null;
+    }
 
-        Integer remainingTime = InteractionManager.getInteractionStateRemainingTime(plugin, player);
-        Integer totalTime = player.getPersistentDataContainer().get(Namespaces.interactionStateTimeout(plugin), PersistentDataType.INTEGER);
-
-        if (remainingTime == null || totalTime == null) {
-            return null;
-        }
-
-        int percent = Math.round((float) totalTime / remainingTime);
-
-        String result = ResourcePackLetter.COOLDOWN_BAR.toString().repeat(percent / 10 * 2); // /10 results in getting one cdb per 10% and *2 for making it double sided
-
-        return Component.text(result);
+    private static @Nullable Component generateTitleForPlayer(JavaPlugin plugin, Player player) {
+        return null;
     }
 
     /**
@@ -62,7 +60,7 @@ public class PlayerUiManager {
         }
         player.sendTitlePart(TitlePart.SUBTITLE, subtitle);
 
-        @Nullable Component title = null; // TODO: Make function
+        @Nullable Component title = generateTitleForPlayer(plugin, player);
         if (title == null) {
             title = Component.empty();
         }

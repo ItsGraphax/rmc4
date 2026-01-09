@@ -1,12 +1,10 @@
 package de.itsgraphax.rmc4.listeners;
 
-import de.itsgraphax.rmc4.PlayerUiManager;
 import de.itsgraphax.rmc4.Token;
 import de.itsgraphax.rmc4.Utils;
 import de.itsgraphax.rmc4.InteractionManager;
-import enums.InteractionState;
+import de.itsgraphax.rmc4.enums.InteractionState;
 import de.itsgraphax.rmc4.utils.Namespaces;
-import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -33,11 +31,10 @@ public class JoinListener implements Listener {
 
             InteractionManager.setPlayerInteractionState(plugin, player, InteractionState.NONE, null, null, null);
 
-            Utils.resetPlayerTitleTimes(player);
-
             Token.removeTokenFromPlayer(plugin, player, 0);
             Token.removeTokenFromPlayer(plugin, player, 1);
         }
+        Utils.resetPlayerTitleTimes(player);
     }
 
     @EventHandler

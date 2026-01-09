@@ -1,8 +1,9 @@
 package de.itsgraphax.rmc4;
 
-import enums.CustomItemMaterial;
+import de.itsgraphax.rmc4.enums.CustomItemMaterial;
 import de.itsgraphax.rmc4.utils.Namespaces;
-import enums.TokenIdentifier;
+import de.itsgraphax.rmc4.enums.ResourcePackLetter;
+import de.itsgraphax.rmc4.enums.TokenIdentifier;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.CustomModelData;
 import io.papermc.paper.persistence.PersistentDataContainerView;
@@ -12,6 +13,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.Nullable;
 
 public class Token {
     public TokenIdentifier identifier;
@@ -36,6 +38,9 @@ public class Token {
         // set stack size
         item.setData(DataComponentTypes.MAX_STACK_SIZE, 1);
 
+        // block item from inventory
+        Utils.setBlockInv(plugin, item, true);
+
         item.editPersistentDataContainer(pdc -> {
             // define which token it substitutes
             pdc.set(Namespaces.token(plugin), PersistentDataType.STRING, identifier.toString());
@@ -46,25 +51,34 @@ public class Token {
         });
 
         // update custom model data
-        item.setData(DataComponentTypes.CUSTOM_MODEL_DATA, CustomModelData.customModelData().addString(identifier.toString()).build());
+        item.setData(DataComponentTypes.CUSTOM_MODEL_DATA, CustomModelData.customModelData().addString(identifier.toString()).addFlag(broken).build());
 
         return item;
     }
 
-    public static Token fromItem(JavaPlugin plugin, ItemStack item) {
+    public static Token fromItem(JavaPlugin plugin, @Nullable ItemStack item) {
+        if (item == null) {
+            item = ItemStack.empty();
+        }
         PersistentDataContainerView pdcv = item.getPersistentDataContainer();
 
         TokenIdentifier newIdentifier = TokenIdentifier.fromId(pdcv.get(Namespaces.token(plugin), PersistentDataType.STRING));
 
         Boolean newBroken = pdcv.get(Namespaces.tokenBroken(plugin), PersistentDataType.BOOLEAN);
-        if (newBroken == null) {newBroken = false;}
+        if (newBroken == null) {
+            newBroken = false;
+        }
 
         Integer newLevel = pdcv.get(Namespaces.tokenLevel(plugin), PersistentDataType.INTEGER);
-        if (newLevel == null) {newLevel = 0;}
+        if (newLevel == null) {
+            newLevel = 0;
+        }
 
         Token newToken = new Token(newIdentifier, newBroken, newLevel);
 
-        if (newIdentifier == TokenIdentifier.UNKNOWN) {newToken.fromDefault = true;}
+        if (newIdentifier == TokenIdentifier.UNKNOWN) {
+            newToken.fromDefault = true;
+        }
 
         return newToken;
     }
@@ -83,16 +97,23 @@ public class Token {
         TokenIdentifier newIdentifier = TokenIdentifier.fromId(pdc.get(Namespaces.equippedToken(plugin, slot), PersistentDataType.STRING));
 
         Boolean newBroken = pdc.get(Namespaces.equippedTokenBroken(plugin, slot), PersistentDataType.BOOLEAN);
-        if (newBroken == null) {newBroken = false;}
+        if (newBroken == null) {
+            newBroken = false;
+        }
 
         Integer newLevel = pdc.get(Namespaces.equippedTokenLevel(plugin, slot), PersistentDataType.INTEGER);
-        if (newLevel == null) {newLevel = 0;}
+        if (newLevel == null) {
+            newLevel = 0;
+        }
 
         Token newToken = new Token(newIdentifier, newBroken, newLevel);
 
-        if (newIdentifier == TokenIdentifier.UNKNOWN) {newToken.fromDefault = true;}
+        if (newIdentifier == TokenIdentifier.UNKNOWN) {
+            newToken.fromDefault = true;
+        }
         return newToken;
     }
+
 
     public static void removeTokenFromPlayer(JavaPlugin plugin, Player player, int slot) {
         PersistentDataContainer pdc = player.getPersistentDataContainer();
@@ -100,5 +121,34 @@ public class Token {
         pdc.remove(Namespaces.equippedToken(plugin, slot));
         pdc.remove(Namespaces.equippedTokenBroken(plugin, slot));
         pdc.remove(Namespaces.equippedTokenLevel(plugin, slot));
+    }
+
+
+    public String toLetter() {
+        ResourcePackLetter letter = ResourcePackLetter.UNKNOWN;
+
+        if (fromDefault) {
+            letter = ResourcePackLetter.EMPTY_TOKEN;
+        }
+
+        if (identifier == TokenIdentifier.DUPE) {
+            if (broken) {
+                letter = ResourcePackLetter.DUPE_TOKEN_BROKEN;
+            } else {
+                letter = ResourcePackLetter.DUPE_TOKEN;
+            }
+        }
+
+        return letter.toString();
+    }
+
+    /**
+     * Returns the amount of a specific token equipped
+     */
+    public static Token[] getTokens(JavaPlugin plugin, Player player) {
+        Token slot0 = Token.fromPlayer(plugin, player, 0);
+        Token slot1 = Token.fromPlayer(plugin, player, 1);
+
+        return new Token[]{slot0, slot1};
     }
 }

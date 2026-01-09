@@ -1,4 +1,4 @@
-package enums;
+package de.itsgraphax.rmc4.enums;
 
 import org.bukkit.event.block.Action;
 

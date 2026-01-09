@@ -1,6 +1,6 @@
 package de.itsgraphax.rmc4;
 
-import enums.InteractionState;
+import de.itsgraphax.rmc4.enums.InteractionState;
 import de.itsgraphax.rmc4.utils.Namespaces;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
@@ -15,6 +15,11 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class InteractionManager {
+    /** Resets the player's interaction state to NONE */
+    public  static void resetPlayerInteractionState(JavaPlugin plugin, Player player) {
+        setPlayerInteractionState(plugin, player, InteractionState.NONE, null, null, null);
+    }
+
     /**
      * Sets the player's interaction state
      */
@@ -77,7 +82,7 @@ public class InteractionManager {
         }
         String storedUuid = player.getPersistentDataContainer().get(Namespaces.interactionStateItemUuid(plugin), PersistentDataType.STRING);
         if (!Objects.equals(handUuid, storedUuid)) {
-            setPlayerInteractionState(plugin, player, InteractionState.NONE, null, null, null);
+            resetPlayerInteractionState(plugin, player);
             return true;
         }
         return false;
@@ -86,7 +91,7 @@ public class InteractionManager {
     /**
      * Gets the remaining time until the player's interaction state times out
      */
-    public static Integer getInteractionStateRemainingTime(JavaPlugin plugin, Player player) {
+    public static Float getInteractionStateRemainingTime(JavaPlugin plugin, Player player) {
         // Now
         LocalDateTime now = LocalDateTime.now();
 
@@ -99,40 +104,14 @@ public class InteractionManager {
         LocalDateTime before = LocalDateTime.parse(storedString);
 
         // Delta
-        Duration delta = Duration.between(now, before);
-        int between = (int) delta.toSeconds();
+        Duration delta = Duration.between(before, now);
+        float between = delta.toSeconds();
 
         Integer totalTime = player.getPersistentDataContainer().get(Namespaces.interactionStateTimeout(plugin), PersistentDataType.INTEGER);
 
         if (totalTime == null) {return null;}
 
         return totalTime - between;
-    }
-
-    /**
-     * Resets the player's interaction state if the last time it was updated it longer than `seconds`
-     * Returns true if it gets reset, false elsewise
-     */
-    public static boolean resetInteractionStateIfTimeout(JavaPlugin plugin, Player player, int seconds) {
-        // Now
-        LocalDateTime now = LocalDateTime.now();
-
-        // Before
-        String storedString = player.getPersistentDataContainer()
-                .get(Namespaces.interactionStateTimestamp(plugin), PersistentDataType.STRING);
-        if (storedString == null) {
-            return false;
-        }
-        LocalDateTime before = LocalDateTime.parse(storedString);
-
-        // Delta
-        Duration delta = Duration.between(now, before);
-        if (delta.toSeconds() > seconds) {
-            setPlayerInteractionState(plugin, player, InteractionState.NONE, null, null, null);
-            return true;
-        }
-
-        return false;
     }
 
     /**

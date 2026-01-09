@@ -4,7 +4,7 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import de.itsgraphax.rmc4.Utils;
-import enums.CustomItemMaterial;
+import de.itsgraphax.rmc4.enums.CustomItemMaterial;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import org.bukkit.entity.Player;
@@ -15,8 +15,6 @@ public class GiveCustomCommand {
         LiteralArgumentBuilder<CommandSourceStack> give_custom_command = Commands.literal("give-custom").then(Commands.argument("item", new CustomItemArgument()).executes(ctx -> executeSelf(ctx, plugin)));
 
         commands.register(give_custom_command.build());
-
-        plugin.getComponentLogger().info("givecustom registered");
     }
 
     private static int executeSelf(CommandContext<CommandSourceStack> ctx, JavaPlugin plugin) {
