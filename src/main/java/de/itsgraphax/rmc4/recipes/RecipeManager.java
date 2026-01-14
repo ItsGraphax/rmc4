@@ -16,60 +16,68 @@ public final class RecipeManager {
     }
 
     private static void registerDiamondShard(JavaPlugin plugin) {
-        ItemStack diamondShardRecipeItem = Utils.getCustomItem(plugin, CustomItemMaterial.DIAMOND_SHARD);
+        ItemStack resultItem = Utils.getCustomItem(plugin, CustomItemMaterial.DIAMOND_SHARD);
 
-        ShapedRecipe diamondShardRecipe = new ShapedRecipe(new NamespacedKey(plugin, CustomItemMaterial.DIAMOND_SHARD.toString()), diamondShardRecipeItem);
-        diamondShardRecipe.shape("pdp", "dad", "pdp");
-        diamondShardRecipe.setIngredient('d', Material.DIAMOND);
-        diamondShardRecipe.setIngredient('a', Material.AMETHYST_SHARD);
-        diamondShardRecipe.setIngredient('p', Material.PRISMARINE_SHARD);
-        plugin.getServer().addRecipe(diamondShardRecipe);
+        ShapedRecipe recipe = new ShapedRecipe(new NamespacedKey(plugin, CustomItemMaterial.DIAMOND_SHARD.toString()), resultItem);
+        recipe.shape("pdp", "dad", "pdp");
+        recipe.setIngredient('d', Material.DIAMOND);
+        recipe.setIngredient('a', Material.AMETHYST_SHARD);
+        recipe.setIngredient('p', Material.PRISMARINE_SHARD);
+        plugin.getServer().addRecipe(recipe);
     }
 
     private static void registerCore(JavaPlugin plugin) {
-        ItemStack coreRecipeItem = Utils.getCustomItem(plugin, CustomItemMaterial.TOKEN_CORE);
+        ItemStack resultItem = Utils.getCustomItem(plugin, CustomItemMaterial.TOKEN_CORE);
 
-        ShapedRecipe coreRecipe = new ShapedRecipe(new NamespacedKey(plugin, CustomItemMaterial.TOKEN_CORE.toString()), coreRecipeItem);
-        coreRecipe.shape(" i ", "pdp", " i ");
-        coreRecipe.setIngredient('i', Material.IRON_BLOCK);
-        coreRecipe.setIngredient('p', Material.PHANTOM_MEMBRANE);
-        coreRecipe.setIngredient('d', Utils.CUSTOM_ITEM_MATERIAL); // diamond shard
-        plugin.getServer().addRecipe(coreRecipe);
+        ShapedRecipe recipe = new ShapedRecipe(new NamespacedKey(plugin, CustomItemMaterial.TOKEN_CORE.toString()), resultItem);
+        recipe.shape(" i ", "pdp", " i ");
+        recipe.setIngredient('i', Material.IRON_BLOCK);
+        recipe.setIngredient('p', Material.PHANTOM_MEMBRANE);
+        recipe.setIngredient('d', Utils.CUSTOM_ITEM_MATERIAL); // diamond shard
+        plugin.getServer().addRecipe(recipe);
     }
 
     private static void registerDupeToken(JavaPlugin plugin) {
-        ItemStack dupe_token_recipe_item = new Token(TokenIdentifier.DUPE, false, 0).asItem(plugin);
-        Utils.setBlockInv(plugin, dupe_token_recipe_item, true);
+        ItemStack resultItem = new Token(TokenIdentifier.DUPE, false, 0).asItem(plugin);
 
-        ShapedRecipe dupe_token_recipe = new ShapedRecipe(new NamespacedKey(plugin, CustomItemMaterial.TOKEN.toString()), dupe_token_recipe_item);
-        dupe_token_recipe.shape("idi", "kck", "bxb");
-        dupe_token_recipe.setIngredient('i', Material.IRON_BLOCK);
-        dupe_token_recipe.setIngredient('d', Utils.CUSTOM_ITEM_MATERIAL); // dupe token core
-        dupe_token_recipe.setIngredient('k', Material.COAL);
-        dupe_token_recipe.setIngredient('b', Material.DIAMOND);
-        dupe_token_recipe.setIngredient('x', Material.DIAMOND_BLOCK);
-        dupe_token_recipe.setIngredient('c', Utils.CUSTOM_ITEM_MATERIAL); // token core
-        plugin.getServer().addRecipe(dupe_token_recipe);
+        ShapedRecipe recipe = new ShapedRecipe(new NamespacedKey(plugin, CustomItemMaterial.TOKEN.toString()), resultItem);
+        recipe.shape("idi", "kck", "bxb");
+        recipe.setIngredient('i', Material.IRON_BLOCK);
+        recipe.setIngredient('d', Utils.CUSTOM_ITEM_MATERIAL); // dupe token core
+        recipe.setIngredient('k', Material.COAL);
+        recipe.setIngredient('b', Material.DIAMOND);
+        recipe.setIngredient('x', Material.DIAMOND_BLOCK);
+        recipe.setIngredient('c', Utils.CUSTOM_ITEM_MATERIAL); // token core
+        plugin.getServer().addRecipe(recipe);
     }
 
     private static void registerTokenRepairer(JavaPlugin plugin) {
-        ItemStack repairerRecipeItem = Utils.getCustomItem(plugin, CustomItemMaterial.TOKEN_REPAIRER);
+        ItemStack resultItem = Utils.getCustomItem(plugin, CustomItemMaterial.REPAIRER);
 
-        ShapedRecipe repairerRecipe = new ShapedRecipe(new NamespacedKey(plugin, CustomItemMaterial.TOKEN_REPAIRER.toString()), repairerRecipeItem);
-        repairerRecipe.shape("iii", "idp", "iii");
-        repairerRecipe.setIngredient('i', Material.IRON_INGOT);
-        repairerRecipe.setIngredient('d', Utils.CUSTOM_ITEM_MATERIAL); // diamond shard
-        plugin.getServer().addRecipe(repairerRecipe);
+        ShapedRecipe recipe = new ShapedRecipe(new NamespacedKey(plugin, CustomItemMaterial.REPAIRER.toString()), resultItem);
+        recipe.shape("iii", "idi", "iii");
+        recipe.setIngredient('i', Material.IRON_INGOT);
+        recipe.setIngredient('d', Utils.CUSTOM_ITEM_MATERIAL); // diamond shard
+        plugin.getServer().addRecipe(recipe);
+    }
+
+    private static void registerTokenUpgrader(JavaPlugin plugin) {
+        ItemStack resultItem = Utils.getCustomItem(plugin, CustomItemMaterial.UPGRADER);
+
+        ShapedRecipe recipe = new ShapedRecipe(new NamespacedKey(plugin, CustomItemMaterial.UPGRADER.toString()), resultItem);
+        recipe.shape("   ", " d ", "   ");
+        recipe.setIngredient('d', Utils.CUSTOM_ITEM_MATERIAL); // diamond shard
+
+        plugin.getServer().addRecipe(recipe);
     }
 
     private static void registerDoubleCustom(JavaPlugin plugin) {
-        ItemStack doubleCustomRecipeItem = ItemStack.of(Material.STONE);
-        Utils.setBlockInv(plugin, doubleCustomRecipeItem, true);
+        ItemStack resultItem = ItemStack.of(Material.WOODEN_HOE);
 
-        ShapelessRecipe doubleCustomRecipe = new ShapelessRecipe(new NamespacedKey(plugin, "doubleCustom"), doubleCustomRecipeItem);
-        doubleCustomRecipe.addIngredient(Utils.CUSTOM_ITEM_MATERIAL);
-        doubleCustomRecipe.addIngredient(Utils.CUSTOM_ITEM_MATERIAL);
-        plugin.getServer().addRecipe(doubleCustomRecipe);
+        ShapelessRecipe recipe = new ShapelessRecipe(new NamespacedKey(plugin, "doubleCustom"), resultItem);
+        recipe.addIngredient(Utils.CUSTOM_ITEM_MATERIAL);
+        recipe.addIngredient(Utils.CUSTOM_ITEM_MATERIAL);
+        plugin.getServer().addRecipe(recipe);
     }
 
     public static void registerAll(JavaPlugin plugin) {

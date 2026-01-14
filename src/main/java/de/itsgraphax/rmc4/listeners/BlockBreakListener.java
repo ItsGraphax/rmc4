@@ -24,26 +24,24 @@ public class BlockBreakListener implements Listener {
     @EventHandler
     private void BlockDropItemListener(BlockDropItemEvent event) {
         for (Token token : Token.getTokens(plugin, event.getPlayer())) {
-            // Dupe Token
-            if (token.identifier == TokenIdentifier.DUPE && !token.broken) {
-                // Check if the block is affected
+            if (token.broken) continue;
+
+            if (token.identifier == TokenIdentifier.DUPE) {
                 Material blockType = event.getBlockState().getType();
-                List<Material> tmp = Arrays.asList(Utils.DUPE_TOKEN_AFFECT);
+                List<Material> affected = Arrays.asList(Utils.DUPE_TOKEN_AFFECT);
 
-                if (tmp.contains(blockType) && !tmp.contains(event.getItems().getFirst().getItemStack().getType())) {
-                    boolean random = true;
-                    while (random) {
-                        random = Math.random() < Utils.DUPE_TOKEN_CHANCES().get(token.level);
+                Item first = event.getItems().getFirst();
+                Material firstDropType = first.getItemStack().getType();
 
-                        if (random) {
-                            // Prevent ancient debris abuse
-                            if (blockType == Material.ANCIENT_DEBRIS) {
-                                Item item = event.getItems().getFirst();
-                                item.setItemStack(ItemStack.of(Material.NETHERITE_SCRAP));
-                                event.getItems().add(item);
-                            } else {
-                                event.getItems().add(event.getItems().getFirst());
-                            }
+                if (affected.contains(blockType) && !affected.contains(firstDropType)) {
+                    while (Math.random() < Utils.DUPE_TOKEN_CHANCES().get(token.level)) {
+                        if (blockType == Material.ANCIENT_DEBRIS) {
+                            ItemStack scrap = new ItemStack(Material.NETHERITE_SCRAP, 1);
+                            event.getItems().add(event.getBlock().getWorld().dropItemNaturally(event.getBlock().getLocation(), scrap));
+                        } else {
+                            ItemStack copy = first.getItemStack().clone();
+                            copy.setAmount(1);
+                            event.getItems().add(event.getBlock().getWorld().dropItemNaturally(event.getBlock().getLocation(), copy));
                         }
                     }
                 }

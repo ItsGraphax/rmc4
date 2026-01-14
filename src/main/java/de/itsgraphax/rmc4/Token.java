@@ -6,6 +6,7 @@ import de.itsgraphax.rmc4.enums.ResourcePackLetter;
 import de.itsgraphax.rmc4.enums.TokenIdentifier;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.CustomModelData;
+import io.papermc.paper.datacomponent.item.ItemLore;
 import io.papermc.paper.persistence.PersistentDataContainerView;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
@@ -14,6 +15,8 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 public class Token {
     public TokenIdentifier identifier;
@@ -33,7 +36,18 @@ public class Token {
         ItemStack item = Utils.getCustomItem(plugin, CustomItemMaterial.TOKEN);
 
         // update name translation key
-        item.setData(DataComponentTypes.CUSTOM_NAME, Component.translatable("ruggimc.itemname." + CustomItemMaterial.TOKEN + "." + identifier.toString()));
+        Component customName = Component
+                .translatable("ruggimc.itemname." + CustomItemMaterial.TOKEN + "." + identifier.toString());
+        if (broken) {
+            customName = customName.append(Component.text(" [BROKEN]"));
+        }
+
+        item.setData(DataComponentTypes.CUSTOM_NAME, customName);
+
+        // update lore
+        Component lore = Component.text("Level " + level + 1);
+
+        item.setData(DataComponentTypes.LORE, ItemLore.lore(List.of(lore)));
 
         // set stack size
         item.setData(DataComponentTypes.MAX_STACK_SIZE, 1);
@@ -87,7 +101,7 @@ public class Token {
         PersistentDataContainer pdc = player.getPersistentDataContainer();
 
         pdc.set(Namespaces.equippedToken(plugin, slot), PersistentDataType.STRING, identifier.toString());
-        pdc.set(Namespaces.equippedTokenLevel(plugin, slot), PersistentDataType.BOOLEAN, broken);
+        pdc.set(Namespaces.equippedTokenBroken(plugin, slot), PersistentDataType.BOOLEAN, broken);
         pdc.set(Namespaces.equippedTokenLevel(plugin, slot), PersistentDataType.INTEGER, level);
     }
 
@@ -125,30 +139,19 @@ public class Token {
 
 
     public String toLetter() {
-        ResourcePackLetter letter = ResourcePackLetter.UNKNOWN;
-
-        if (fromDefault) {
-            letter = ResourcePackLetter.EMPTY_TOKEN;
-        }
-
-        if (identifier == TokenIdentifier.DUPE) {
-            if (broken) {
-                letter = ResourcePackLetter.DUPE_TOKEN_BROKEN;
-            } else {
-                letter = ResourcePackLetter.DUPE_TOKEN;
-            }
-        }
-
-        return letter.toString();
+        return switch (identifier) {
+            case DUPE -> (broken ? ResourcePackLetter.DUPE_TOKEN_BROKEN : ResourcePackLetter.DUPE_TOKEN).toString();
+            default -> ResourcePackLetter.EMPTY_TOKEN.toString();
+        };
     }
 
     /**
      * Returns the amount of a specific token equipped
      */
     public static Token[] getTokens(JavaPlugin plugin, Player player) {
-        Token slot0 = Token.fromPlayer(plugin, player, 0);
-        Token slot1 = Token.fromPlayer(plugin, player, 1);
-
-        return new Token[]{slot0, slot1};
+        return new Token[]{
+                Token.fromPlayer(plugin, player, 0),
+                Token.fromPlayer(plugin, player, 1)
+        };
     }
 }

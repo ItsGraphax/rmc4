@@ -1,6 +1,7 @@
 package de.itsgraphax.rmc4.listeners;
 
 import de.itsgraphax.rmc4.Token;
+import de.itsgraphax.rmc4.Utils;
 import de.itsgraphax.rmc4.utils.Namespaces;
 import de.itsgraphax.rmc4.enums.CustomItemMaterial;
 import org.bukkit.NamespacedKey;
@@ -12,42 +13,43 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Objects;
-
 public class CraftingListener implements Listener {
     private final JavaPlugin plugin;
-    private final NamespacedKey recipe_token_core;
-    private final NamespacedKey recipe_dupe_token;
-    private final NamespacedKey recipe_token_repairer;
 
-    private final int RESULT = 0;
-    private final int TOP_LEFT = 1;
-    private final int TOP_MIDDLE = 2;
-    private final int TOP_RIGHT = 3;
-    private final int MIDDLE_LEFT = 4;
-    private final int MIDDLE_MIDDLE = 5;
-    private final int MIDDLE_RIGHT = 6;
-    private final int BOTTOM_LEFT = 7;
-    private final int BOTTOM_MIDDLE = 8;
-    private final int BOTTOM_RIGHT = 9;
+    private final NamespacedKey tokenCoreRecipe;
+    private final NamespacedKey dupeTokenRecipe;
+    private final NamespacedKey tokenRepairerRecipe;
+    private final NamespacedKey tokenUpgraderRecipe;
+
+    private static final int TOP_LEFT = 1;
+    private static final int TOP_MIDDLE = 2;
+    private static final int TOP_RIGHT = 3;
+    private static final int MIDDLE_LEFT = 4;
+    private static final int MIDDLE_MIDDLE = 5;
+    private static final int MIDDLE_RIGHT = 6;
+    private static final int BOTTOM_LEFT = 7;
+    private static final int BOTTOM_MIDDLE = 8;
+    private static final int BOTTOM_RIGHT = 9;
 
     public CraftingListener(JavaPlugin plugin) {
         this.plugin = plugin;
-        this.recipe_token_core = new NamespacedKey(plugin, CustomItemMaterial.TOKEN_CORE.toString());
-        this.recipe_dupe_token = new NamespacedKey(plugin, CustomItemMaterial.TOKEN.toString());
-        this.recipe_token_repairer = new NamespacedKey(plugin, CustomItemMaterial.TOKEN_REPAIRER.toString());
+        this.tokenCoreRecipe = new NamespacedKey(plugin, CustomItemMaterial.TOKEN_CORE.toString());
+        this.dupeTokenRecipe = new NamespacedKey(plugin, CustomItemMaterial.TOKEN.toString());
+        this.tokenRepairerRecipe = new NamespacedKey(plugin, CustomItemMaterial.REPAIRER.toString());
+        this.tokenUpgraderRecipe = new NamespacedKey(plugin, CustomItemMaterial.UPGRADER.toString());
     }
 
-    private boolean forceCraftingCustomId(CraftingInventory inventory, Integer slot, CustomItemMaterial item_id) {
-        /* Returns false if the item was not matching */
+    private boolean forceCraftingCustomId(CraftingInventory inventory, Integer slot, CustomItemMaterial itemMaterial) {
+        // Returns false if the item was not matching
         if (inventory.getItem(slot) != null) {
-            // Check if the item is not a diamond shard
-            if (!Objects.equals(inventory.getItem(slot).getPersistentDataContainer()
-                    .get(new NamespacedKey(plugin, "custom_item"), PersistentDataType.STRING), item_id.toString())) {
-                inventory.setItem(RESULT, null);
-
+            // Check if the item is not the custom item
+            if (!Utils.isCustomMaterial(plugin, inventory.getItem(slot), itemMaterial)) {
+                inventory.setResult(null);
                 return false;
             }
+        } else {
+            inventory.setResult(null);
+            return false;
         }
         return true;
     }
@@ -58,9 +60,12 @@ public class CraftingListener implements Listener {
 
     private @Nullable ItemStack hasCustomMaterial(ItemStack[] items, CustomItemMaterial material) {
         for (ItemStack item : items) {
+            if (item == null) {
+                continue;
+            }
+
             if (item.getPersistentDataContainer()
-                    .getOrDefault(Namespaces.customItem(plugin), PersistentDataType.STRING, "<null>") ==
-                    material.toString()) {
+                    .getOrDefault(Namespaces.customItem(plugin), PersistentDataType.STRING, "<null>").equals(material.toString())) {
                 return item;
             }
         }
@@ -75,14 +80,16 @@ public class CraftingListener implements Listener {
             if (real_recipe instanceof ShapedRecipe recipe) {
 
                 // Core Crafting Recipe
-                if (recipe.getKey().equals(recipe_token_core)) {
+                if (recipe.getKey().equals(tokenCoreRecipe)) {
                     forceCraftingCustomId(event.getInventory(), MIDDLE_MIDDLE, CustomItemMaterial.DIAMOND_SHARD);
 
-                } else if (recipe.getKey().equals(recipe_dupe_token)) {
+                } else if (recipe.getKey().equals(dupeTokenRecipe)) {
                     forceCraftingCustomId(event.getInventory(), TOP_MIDDLE, CustomItemMaterial.DUPE_TOKEN_CORE);
                     forceCraftingCustomId(event.getInventory(), MIDDLE_MIDDLE, CustomItemMaterial.TOKEN_CORE);
 
-                } else if (recipe.getKey().equals(recipe_token_repairer)) {
+                } else if (recipe.getKey().equals(tokenRepairerRecipe)) {
+                    forceCraftingCustomId(event.getInventory(), MIDDLE_MIDDLE, CustomItemMaterial.DIAMOND_SHARD);
+                } else if (recipe.getKey().equals(tokenUpgraderRecipe)) {
                     forceCraftingCustomId(event.getInventory(), MIDDLE_MIDDLE, CustomItemMaterial.DIAMOND_SHARD);
                 }
             } else if (real_recipe instanceof ShapelessRecipe recipe) {
@@ -100,13 +107,19 @@ public class CraftingListener implements Listener {
 
                 if (recipe.getKey().equals(new NamespacedKey(plugin, "doubleCustom"))) {
                     Token token = Token.fromItem(plugin, hasCustomMaterial(items, CustomItemMaterial.TOKEN));
-                    ItemStack tokenRepairer = hasCustomMaterial(items, CustomItemMaterial.TOKEN_REPAIRER);
+                    ItemStack tokenRepairer = hasCustomMaterial(items, CustomItemMaterial.REPAIRER);
+                    ItemStack tokenUpgrader = hasCustomMaterial(items, CustomItemMaterial.UPGRADER);
 
                     if (!token.fromDefault && tokenRepairer != null && token.broken) {
                         token.broken = false;
-                        event.getInventory().setItem(RESULT, token.asItem(plugin));
+                        ItemStack item = token.asItem(plugin);
+                        event.getInventory().setResult(item);
+                    } else if (!token.fromDefault && tokenUpgrader != null && token.level < 3) {
+                        token.level += 1;
+                        ItemStack item = token.asItem(plugin);
+                        event.getInventory().setResult(item);
                     } else {
-                        event.getInventory().setItem(RESULT, null);
+                        event.getInventory().setResult(null);
                     }
                 }
             }
