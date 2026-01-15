@@ -1,7 +1,6 @@
-package de.itsgraphax.rmc4;
+package de.itsgraphax.rmc4.utils;
 
 import de.itsgraphax.rmc4.enums.CustomItemMaterial;
-import de.itsgraphax.rmc4.utils.Namespaces;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
@@ -15,7 +14,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.Duration;
-import java.util.HashMap;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -26,38 +24,6 @@ public final class Utils {
     public static final int CURRENT_INITIALIZATION_VER = 2;
     public static final int DEFAULT_TIMEOUT_SHORT_S = 1;
     public static final int DEFAULT_TIMEOUT_NORMAL_S = 5;
-    public static final char LIST_DELIMITER = '£';
-
-    public static final Material[] DUPE_TOKEN_AFFECT = {
-            Material.COAL_ORE,
-            Material.DEEPSLATE_COAL_ORE,
-            Material.COPPER_ORE,
-            Material.DEEPSLATE_COPPER_ORE,
-            Material.IRON_ORE,
-            Material.DEEPSLATE_IRON_ORE,
-            Material.GOLD_ORE,
-            Material.DEEPSLATE_GOLD_ORE,
-            Material.DIAMOND_ORE,
-            Material.DEEPSLATE_DIAMOND_ORE,
-            Material.LAPIS_ORE,
-            Material.DEEPSLATE_LAPIS_ORE,
-            Material.EMERALD_ORE,
-            Material.DEEPSLATE_EMERALD_ORE,
-            Material.REDSTONE_ORE,
-            Material.DEEPSLATE_REDSTONE_ORE,
-            Material.NETHER_GOLD_ORE,
-            Material.NETHER_QUARTZ_ORE,
-            Material.ANCIENT_DEBRIS
-    };
-    public static HashMap<Integer, Double> DUPE_TOKEN_CHANCES() {
-        HashMap<Integer, Double> map = new HashMap<>();
-
-        map.put(0, 0.1);
-        map.put(1, 0.2);
-        map.put(2, 0.3);
-
-        return map;
-    }
 
     // Items
         // ItemStack generation

@@ -1,11 +1,12 @@
 package de.itsgraphax.rmc4.listeners;
 
-import de.itsgraphax.rmc4.InteractionManager;
+import de.itsgraphax.rmc4.managers.InteractionManager;
 import de.itsgraphax.rmc4.Token;
-import de.itsgraphax.rmc4.Utils;
+import de.itsgraphax.rmc4.utils.Utils;
 import de.itsgraphax.rmc4.enums.CustomItemMaterial;
 import de.itsgraphax.rmc4.enums.InteractionState;
 import de.itsgraphax.rmc4.enums.MouseButton;
+import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
@@ -66,17 +67,23 @@ public class ClickListener implements Listener {
         if (slot == -1) return; // not left/right click
 
         Token equipped = Token.fromPlayer(plugin, player, slot);
-        if (!equipped.fromDefault) {
+        if (!equipped.fromDefault) { // there is already a token in this slot
             InteractionManager.resetPlayerInteractionState(plugin, player);
             return;
         }
 
-        if (item == null) {
+        if (item == null) { // safety check
             InteractionManager.resetPlayerInteractionState(plugin, player);
             return;
         }
+
 
         Token newToken = Token.fromItem(plugin, item);
+        if (Token.hasToken(plugin, player, newToken.identifier) != null) {
+            InteractionManager.resetPlayerInteractionState(plugin, player);
+            player.sendMessage(Component.translatable("ruggimc.error.token_of_kind_already_equipped"));
+            return;
+        }
         newToken.intoPlayer(plugin, player, slot);
 
         item.setAmount(item.getAmount() - 1);

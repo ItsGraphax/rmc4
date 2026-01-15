@@ -1,9 +1,11 @@
 package de.itsgraphax.rmc4;
 
 import de.itsgraphax.rmc4.enums.CustomItemMaterial;
+import de.itsgraphax.rmc4.enums.TokenTriggerResult;
 import de.itsgraphax.rmc4.utils.Namespaces;
 import de.itsgraphax.rmc4.enums.ResourcePackLetter;
 import de.itsgraphax.rmc4.enums.TokenIdentifier;
+import de.itsgraphax.rmc4.utils.Utils;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.CustomModelData;
 import io.papermc.paper.datacomponent.item.ItemLore;
@@ -16,6 +18,8 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.Nullable;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class Token {
@@ -45,7 +49,7 @@ public class Token {
         item.setData(DataComponentTypes.CUSTOM_NAME, customName);
 
         // update lore
-        Component lore = Component.text("Level " + level + 1);
+        Component lore = Component.text("Level " + (level + 1));
 
         item.setData(DataComponentTypes.LORE, ItemLore.lore(List.of(lore)));
 
@@ -145,13 +149,67 @@ public class Token {
         };
     }
 
-    /**
-     * Returns the amount of a specific token equipped
-     */
+
     public static Token[] getTokens(JavaPlugin plugin, Player player) {
         return new Token[]{
                 Token.fromPlayer(plugin, player, 0),
                 Token.fromPlayer(plugin, player, 1)
         };
+    }
+
+    public static Token hasToken(JavaPlugin plugin, Player player, TokenIdentifier tokenIdentifier) {
+        for (Token token : getTokens(plugin, player)) {
+            if (token.identifier == tokenIdentifier) {
+                return token;
+            }
+        }
+        return null;
+    }
+
+
+    public double getRemainingCooldownTime(JavaPlugin plugin, Player player) {
+        // Now
+        LocalDateTime now = LocalDateTime.now();
+
+        // Before
+        String storedString = player.getPersistentDataContainer()
+                .get(Namespaces.tokenTriggerTimestamp(plugin, identifier), PersistentDataType.STRING);
+        if (storedString == null) {
+            storedString = LocalDateTime.MIN.toString();
+        }
+        LocalDateTime before = LocalDateTime.parse(storedString);
+
+        // Delta
+        Duration delta = Duration.between(before, now);
+        float between = delta.toSeconds();
+
+        return plugin.getConfig().getInt("token_levels." + identifier.toString() + ".cooldown." + level) - between;
+    }
+
+    public static TokenTriggerResult trigger(JavaPlugin plugin, Player player, int slot) {
+        Token token = fromPlayer(plugin, player, slot);
+
+        if (token.fromDefault) {
+            return TokenTriggerResult.NO_TOKEN;
+        }
+
+        if (!token.identifier.triggerable()) {
+            return TokenTriggerResult.UNTRIGGERABLE;
+        }
+
+        if (token.getRemainingCooldownTime(plugin, player) > 0) {
+            return TokenTriggerResult.COOLDOWN;
+        }
+
+        PersistentDataContainer pdc = player.getPersistentDataContainer();
+
+        // Set trigger timestamp
+        pdc.set(Namespaces.tokenTriggerTimestamp(plugin, token.identifier), PersistentDataType.STRING,
+                LocalDateTime.now().toString());
+
+        // TRIGGER
+        token.identifier.trigger(plugin, player, token);
+
+        return TokenTriggerResult.SUCCESS;
     }
 }

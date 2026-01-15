@@ -1,5 +1,6 @@
-package de.itsgraphax.rmc4;
+package de.itsgraphax.rmc4.managers;
 
+import de.itsgraphax.rmc4.Token;
 import de.itsgraphax.rmc4.utils.Namespaces;
 import de.itsgraphax.rmc4.enums.InteractionState;
 import de.itsgraphax.rmc4.enums.ResourcePackLetter;
@@ -11,6 +12,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+// TODO: Show token cooldown
 public class PlayerUiManager {
     /**
      * Generate action bar

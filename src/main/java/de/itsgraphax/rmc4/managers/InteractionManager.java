@@ -1,7 +1,8 @@
-package de.itsgraphax.rmc4;
+package de.itsgraphax.rmc4.managers;
 
 import de.itsgraphax.rmc4.enums.InteractionState;
 import de.itsgraphax.rmc4.utils.Namespaces;
+import de.itsgraphax.rmc4.utils.Utils;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
@@ -13,6 +14,8 @@ import org.jetbrains.annotations.Nullable;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Objects;
+
+// TODO: Make tokens triggerable
 
 public class InteractionManager {
     /** Resets the player's interaction state to NONE */

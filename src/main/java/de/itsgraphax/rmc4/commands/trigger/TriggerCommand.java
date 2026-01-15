@@ -1,4 +1,4 @@
-package de.itsgraphax.rmc4.commands.unequip_token;
+package de.itsgraphax.rmc4.commands.trigger;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -10,9 +10,9 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class UnequipTokenCommand {
+public class TriggerCommand {
     public static void register(Commands commands, JavaPlugin plugin) {
-        LiteralArgumentBuilder<CommandSourceStack> giveCustomCommand = Commands.literal("unequip")
+        LiteralArgumentBuilder<CommandSourceStack> giveCustomCommand = Commands.literal("trigger")
                 .then(Commands.literal("left")
                         .executes(ctx -> executeSelf(ctx, plugin, 0)))
                 .then(Commands.literal("right")
@@ -27,15 +27,7 @@ public class UnequipTokenCommand {
             return 0;
         }
 
-        Token currentTokenInSlot = Token.fromPlayer(plugin, player, slot);
-        if (currentTokenInSlot.fromDefault) {
-            player.sendMessage(Component.translatable("ruggimc.error.no_token_in_slot"));
-            return 0;
-        }
-        Token.removeTokenFromPlayer(plugin, player, slot);
-
-        player.getInventory().addItem(currentTokenInSlot.asItem(plugin));
-        player.sendMessage(Component.translatable("ruggimc.success.token_unequipped"));
+        Token.trigger(plugin, player, slot);
 
         return Command.SINGLE_SUCCESS;
     }

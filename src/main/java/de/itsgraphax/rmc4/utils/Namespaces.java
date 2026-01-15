@@ -1,5 +1,6 @@
 package de.itsgraphax.rmc4.utils;
 
+import de.itsgraphax.rmc4.enums.TokenIdentifier;
 import org.bukkit.NamespacedKey;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -44,4 +45,9 @@ public class Namespaces {
     public static NamespacedKey equippedTokenBroken(JavaPlugin plugin, int slot) {return numberedNamespace(plugin, "equippedTokenBroken", slot);}
 
     public static NamespacedKey equippedTokenLevel(JavaPlugin plugin, int slot) {return numberedNamespace(plugin, "equippedTokenLevel", slot);}
+
+        // Token Cooldown
+    public static NamespacedKey tokenTriggerTimestamp(JavaPlugin plugin, TokenIdentifier tokenIdentifier) {
+        return new NamespacedKey(plugin, "tokenTrigggerTimestamp" + tokenIdentifier.toString());
+    }
 }

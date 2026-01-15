@@ -1,7 +1,7 @@
 package de.itsgraphax.rmc4.recipes;
 
 import de.itsgraphax.rmc4.Token;
-import de.itsgraphax.rmc4.Utils;
+import de.itsgraphax.rmc4.utils.Utils;
 import de.itsgraphax.rmc4.enums.CustomItemMaterial;
 import de.itsgraphax.rmc4.enums.TokenIdentifier;
 import org.bukkit.Material;

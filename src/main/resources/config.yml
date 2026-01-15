@@ -1,0 +1,39 @@
+token_levels:
+  dupe:
+    trigger_perc:
+      0: 0.1
+      1: 0.2
+      2: 0.3
+
+  dash:
+    cooldown:
+      0: 25
+      1: 20
+      2: 15
+    strength:
+      0: 1.5
+      1: 2.0
+      2: 2.5
+
+token_config:
+  dupe:
+    affects:
+      - "COAL_ORE",
+      - "DEEPSLATE_COAL_ORE",
+      - "COPPER_ORE",
+      - "DEEPSLATE_COPPER_ORE",
+      - "IRON_ORE",
+      - "DEEPSLATE_IRON_ORE",
+      - "GOLD_ORE",
+      - "DEEPSLATE_GOLD_ORE",
+      - "DIAMOND_ORE",
+      - "DEEPSLATE_DIAMOND_ORE",
+      - "LAPIS_ORE",
+      - "DEEPSLATE_LAPIS_ORE",
+      - "EMERALD_ORE",
+      - "DEEPSLATE_EMERALD_ORE",
+      - "REDSTOME_ORE",
+      - "DEEPSLATE_REDSTONE_ORE",
+      - "NETHER_GOLD_ORE",
+      - "NETHER_QUARZ_ORE",
+      - "ANCIENT_DEBIS"

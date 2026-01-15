@@ -4,6 +4,7 @@ import de.itsgraphax.rmc4.commands.give_custom.GiveCustomCommand;
 import de.itsgraphax.rmc4.commands.give_token.GiveTokenCommand;
 import de.itsgraphax.rmc4.commands.unequip_token.UnequipTokenCommand;
 import de.itsgraphax.rmc4.listeners.*;
+import de.itsgraphax.rmc4.managers.PlayerUiManager;
 import de.itsgraphax.rmc4.recipes.RecipeManager;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import org.bukkit.plugin.PluginManager;
@@ -35,8 +36,6 @@ public final class Rmc4 extends JavaPlugin {
     }
 
     private void setupConfig() {
-        saveResource("config.yml", false);
-
         saveDefaultConfig();
     }
 

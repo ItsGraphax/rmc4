@@ -3,7 +3,7 @@ package de.itsgraphax.rmc4.commands.give_custom;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
-import de.itsgraphax.rmc4.Utils;
+import de.itsgraphax.rmc4.utils.Utils;
 import de.itsgraphax.rmc4.enums.CustomItemMaterial;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;

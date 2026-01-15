@@ -1,7 +1,7 @@
 package de.itsgraphax.rmc4.listeners;
 
 import de.itsgraphax.rmc4.Token;
-import de.itsgraphax.rmc4.Utils;
+import de.itsgraphax.rmc4.utils.Utils;
 import de.itsgraphax.rmc4.utils.Namespaces;
 import de.itsgraphax.rmc4.enums.CustomItemMaterial;
 import org.bukkit.NamespacedKey;

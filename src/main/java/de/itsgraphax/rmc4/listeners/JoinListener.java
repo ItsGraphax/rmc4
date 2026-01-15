@@ -1,8 +1,8 @@
 package de.itsgraphax.rmc4.listeners;
 
 import de.itsgraphax.rmc4.Token;
-import de.itsgraphax.rmc4.Utils;
-import de.itsgraphax.rmc4.InteractionManager;
+import de.itsgraphax.rmc4.utils.Utils;
+import de.itsgraphax.rmc4.managers.InteractionManager;
 import de.itsgraphax.rmc4.enums.InteractionState;
 import de.itsgraphax.rmc4.utils.Namespaces;
 import org.bukkit.entity.Player;
