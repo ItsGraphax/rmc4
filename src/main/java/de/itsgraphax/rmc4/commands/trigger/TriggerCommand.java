@@ -12,7 +12,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class TriggerCommand {
     public static void register(Commands commands, JavaPlugin plugin) {
-        LiteralArgumentBuilder<CommandSourceStack> giveCustomCommand = Commands.literal("trigger")
+        LiteralArgumentBuilder<CommandSourceStack> giveCustomCommand = Commands.literal("token")
                 .then(Commands.literal("left")
                         .executes(ctx -> executeSelf(ctx, plugin, 0)))
                 .then(Commands.literal("right")

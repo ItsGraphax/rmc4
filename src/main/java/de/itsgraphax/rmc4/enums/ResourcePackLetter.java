@@ -5,7 +5,9 @@ public enum ResourcePackLetter {
     COOLDOWN_BAR("\uf001"),
     EMPTY_TOKEN("\uf002"),
     DUPE_TOKEN("\uf003"),
-    DUPE_TOKEN_BROKEN("\uf004");
+    DUPE_TOKEN_BROKEN("\uf004"),
+    DASH_TOKEN("\uf005"),
+    DASH_TOKEN_BROKEN("\uf006");
 
     private final String text;
 

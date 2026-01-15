@@ -145,6 +145,7 @@ public class Token {
     public String toLetter() {
         return switch (identifier) {
             case DUPE -> (broken ? ResourcePackLetter.DUPE_TOKEN_BROKEN : ResourcePackLetter.DUPE_TOKEN).toString();
+            case DASH -> (broken ? ResourcePackLetter.DASH_TOKEN_BROKEN : ResourcePackLetter.DASH_TOKEN).toString();
             default -> ResourcePackLetter.EMPTY_TOKEN.toString();
         };
     }

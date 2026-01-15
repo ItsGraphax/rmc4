@@ -2,6 +2,7 @@ package de.itsgraphax.rmc4;
 
 import de.itsgraphax.rmc4.commands.give_custom.GiveCustomCommand;
 import de.itsgraphax.rmc4.commands.give_token.GiveTokenCommand;
+import de.itsgraphax.rmc4.commands.trigger.TriggerCommand;
 import de.itsgraphax.rmc4.commands.unequip_token.UnequipTokenCommand;
 import de.itsgraphax.rmc4.listeners.*;
 import de.itsgraphax.rmc4.managers.PlayerUiManager;
@@ -32,6 +33,7 @@ public final class Rmc4 extends JavaPlugin {
             GiveCustomCommand.register(commands.registrar(), this);
             GiveTokenCommand.register(commands.registrar(), this);
             UnequipTokenCommand.register(commands.registrar(), this);
+            TriggerCommand.register(commands.registrar(), this);
         });
     }
 
